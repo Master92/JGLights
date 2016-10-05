@@ -29,11 +29,12 @@ import java.awt.event.ActionListener;
 //
 
 public class MainView extends JFrame implements ActionListener {
-    private static final String DISCONNECT = "dis", CONNECT = "con", ADD_END = "add", DEL_END = "del", NEXT = "next";
+    private static final String DISCONNECT = "dis", CONNECT = "con", ADD_END = "add", DEL_END = "del", NEXT = "next", SHOW_CLOCK = "clck", SET_TIMER = "tim", SEND_TEXT = "tex", NEW_ROUND = "new";
 
     private JPanel labelPane;
     private JLabel countdownLabel, groupLabel, endsLabel;
-    private JButton disconnectButton, connectButton, addButton, delButton, nextButton;
+    private JButton disconnectButton, connectButton, addButton, delButton, nextButton, clockButton, timerButton, sendTextButton, newRoundButton;
+    private JTextField inputField;
 
     private Communicator comm;
 
@@ -50,6 +51,7 @@ public class MainView extends JFrame implements ActionListener {
         cons.weighty = 1;
         cons.gridx = 0;
         cons.gridy = 4;
+        cons.insets = new Insets(5,5,5,5);
 
         cons.gridwidth = 2;
         disconnectButton = new JButton("Trennen");
@@ -58,36 +60,78 @@ public class MainView extends JFrame implements ActionListener {
         add(disconnectButton, cons);
 
         cons.gridx = 2;
+        cons.gridwidth = 4;
         connectButton = new JButton("Verbinden");
         connectButton.setActionCommand(CONNECT);
         connectButton.addActionListener(this);
         add(connectButton, cons);
 
         cons.gridy++;
-        cons.gridwidth = 1;
+        cons.gridwidth = 3;
         cons.gridx = 0;
         delButton = new JButton("Passe entfernen");
         delButton.setActionCommand(DEL_END);
         delButton.addActionListener(this);
         add(delButton, cons);
 
-        cons.gridx++;
+        cons.gridx = 3;
         addButton = new JButton("Passe hinzufügen");
         addButton.setActionCommand(ADD_END);
         addButton.addActionListener(this);
         add(addButton, cons);
 
-        cons.gridx++;
-        cons.gridwidth = 2;
+        cons.gridy++;
+        cons.gridx = 0;
+        cons.gridwidth = 6;
+        cons.gridheight = 2;
         nextButton = new JButton("Weiter");
         nextButton.setActionCommand(NEXT);
         nextButton.addActionListener(this);
         add(nextButton, cons);
 
+        cons.gridy++;
+        cons.gridy++;
+        cons.gridheight = 1;
+        cons.gridwidth = 3;
+        clockButton = new JButton("Uhrzeit anzeigen");
+        clockButton.setActionCommand(SHOW_CLOCK);
+        clockButton.addActionListener(this);
+        add(clockButton, cons);
+
+        cons.gridx = 3;
+        timerButton = new JButton("Timer stellen...");
+        timerButton.setActionCommand(SET_TIMER);
+        timerButton.addActionListener(this);
+        add(timerButton, cons);
+
+        cons.gridy++;
+        cons.gridx = 0;
+        cons.gridwidth = 5;
+        inputField = new JTextField();
+        inputField.setActionCommand(SEND_TEXT);
+        inputField.addActionListener(this);
+        add(inputField, cons);
+
+        cons.gridx = 5;
+        cons.gridwidth = 1;
+        sendTextButton = new JButton("Abschicken");
+        sendTextButton.setActionCommand(SEND_TEXT);
+        sendTextButton.addActionListener(this);
+        add(sendTextButton, cons);
+
+        cons.gridx = 0;
+        cons.gridy++;
+        cons.gridwidth = 6;
+        newRoundButton = new JButton("Neue Runde...");
+        newRoundButton.setActionCommand(NEW_ROUND);
+        newRoundButton.addActionListener(this);
+        add(newRoundButton, cons);
+
         pack();
         setLocationRelativeTo(null);
         comm = new Communicator(new MainViewController());
         commEnabled(false);
+        setResizable(false);
         setVisible(true);
     }
 
@@ -97,7 +141,7 @@ public class MainView extends JFrame implements ActionListener {
         cons.fill = GridBagConstraints.NONE;
         cons.gridx = 0;
         cons.gridy = 0;
-        cons.gridwidth = 4;
+        cons.gridwidth = 6;
 
         labelPane = new JPanel(new GridBagLayout());
         countdownLabel = new JLabel("0");
@@ -126,6 +170,11 @@ public class MainView extends JFrame implements ActionListener {
         delButton.setEnabled(enable);
         addButton.setEnabled(enable);
         nextButton.setEnabled(enable);
+        clockButton.setEnabled(enable);
+        timerButton.setEnabled(enable);
+        inputField.setEnabled(enable);
+        sendTextButton.setEnabled(enable);
+        newRoundButton.setEnabled(enable);
 
         if(enable)
             comm.startListening();
@@ -155,6 +204,21 @@ public class MainView extends JFrame implements ActionListener {
         comm.sendMessage(aiprotocol.NEXT);
     }
 
+    private void onShowClock() {
+        comm.sendMessage(aiprotocol.TIME);
+    }
+
+    private void onSetTimer() {
+        if(TimerDialog.show(this) == JOptionPane.OK_OPTION)
+            comm.sendMessage(aiprotocol.TIMER, TimerDialog.getTimer());
+    }
+
+    private void onNewRound() {
+        if(NewRoundDialog.showDialog(this) == JOptionPane.OK_OPTION) {
+            comm.sendMessage(aiprotocol.NEW_ROUND, NewRoundDialog.getString());
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -178,6 +242,18 @@ public class MainView extends JFrame implements ActionListener {
 
             case NEXT:
                 onNext();
+                break;
+
+            case SHOW_CLOCK:
+                onShowClock();
+                break;
+
+            case SET_TIMER:
+                onSetTimer();
+                break;
+
+            case NEW_ROUND:
+                onNewRound();
                 break;
 
             default:
