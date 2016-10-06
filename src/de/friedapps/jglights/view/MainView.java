@@ -219,6 +219,10 @@ public class MainView extends JFrame implements ActionListener {
         }
     }
 
+    private void onSendText() {
+        comm.sendMessage(aiprotocol.RUNTEXT, inputField.getText());
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -250,6 +254,10 @@ public class MainView extends JFrame implements ActionListener {
 
             case SET_TIMER:
                 onSetTimer();
+                break;
+
+            case SEND_TEXT:
+                onSendText();
                 break;
 
             case NEW_ROUND:

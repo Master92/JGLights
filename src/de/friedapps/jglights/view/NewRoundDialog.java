@@ -116,7 +116,11 @@ public class NewRoundDialog implements ActionListener {
             s = "";
             s += (char)(int) amountSpinner.getValue();
             s += (char)(int) preparationSpinner.getValue();
-            s += (char)(int) durationSpinner.getValue();
+            int iDur = (int)durationSpinner.getValue();
+            int d1= iDur / 10;
+            int d2 = iDur - d1 * 10;
+            s += (char)d1;
+            s += (char)d2;
             s += (groupCheckBox.isSelected()) ? '1' : '0';
         }
 
