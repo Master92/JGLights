@@ -306,7 +306,7 @@ public class MainView extends JFrame implements ActionListener {
         @Override
         public void setTimer(int hours, int minutes, int seconds) {
             countdownLabel.setText(hours + ":" + minutes + ":" + seconds);
-            String s = (hours > 0 && minutes > 0 && seconds > 0) ? "Timer läuft..." : "Timer beendet";
+            String s = (hours > 0 || minutes > 0 || seconds > 0) ? "Timer läuft..." : "Timer beendet";
             groupLabel.setText(s);
             endsLabel.setText("");
         }
