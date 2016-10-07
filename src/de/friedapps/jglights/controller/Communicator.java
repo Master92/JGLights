@@ -150,10 +150,21 @@ public class Communicator {
                         run = false;
 
                     else {
-                        controller.setCountdown(buffer[1]*10+buffer[2]);
-                        controller.setGroup(buffer[4]);
-                        controller.setEnd(buffer[5]+1, buffer[6]);
-                        controller.setBGColor((buffer[3] == aiprotocol.COLOR_GREEN) ? Color.green : (buffer[3] == aiprotocol.COLOR_YELLOW) ? Color.yellow : Color.red);
+                        switch(buffer[0]) {
+                            case aiprotocol.UPDATE:
+                                controller.setCountdown(buffer[1] * 10 + buffer[2]);
+                                controller.setGroup(buffer[4]);
+                                controller.setEnd(buffer[5] + 1, buffer[6]);
+                                controller.setBGColor((buffer[3] == aiprotocol.COLOR_GREEN) ? Color.green : (buffer[3] == aiprotocol.COLOR_YELLOW) ? Color.yellow : Color.red);
+                                break;
+
+                            case aiprotocol.TIMER_UPDATE:
+                                controller.setTimer(buffer[1] % 127, buffer[2] % 127, buffer[3] % 127);
+                                break;
+
+                            default:
+                                controller.showError("Some strange update was sent from the display: " + buffer);
+                        }
                     }
 
                     Thread.sleep(250);

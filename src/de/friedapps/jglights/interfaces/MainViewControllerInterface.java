@@ -28,4 +28,5 @@ public interface MainViewControllerInterface {
     void setBGColor(Color c);
     void setCommEnabled(boolean enabled);
     void showError(String msg);
+    void setTimer(int hours, int minutes, int seconds);
 }

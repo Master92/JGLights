@@ -302,5 +302,13 @@ public class MainView extends JFrame implements ActionListener {
         public void showError(String msg) {
             JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "ERROR: "+msg, "ERROR", JOptionPane.ERROR_MESSAGE);
         }
+
+        @Override
+        public void setTimer(int hours, int minutes, int seconds) {
+            countdownLabel.setText(hours + ":" + minutes + ":" + seconds);
+            String s = (hours > 0 && minutes > 0 && seconds > 0) ? "Timer läuft..." : "Timer beendet";
+            groupLabel.setText(s);
+            endsLabel.setText("");
+        }
     }
 }

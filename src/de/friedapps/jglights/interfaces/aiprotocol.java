@@ -23,6 +23,8 @@ public interface aiprotocol {
     int PORT = 13337;
 
     byte NEXT = 1;
+    byte UPDATE = 2;
+    byte TIMER_UPDATE = 3;
 
     byte COLOR_RED = 100;
     byte COLOR_YELLOW = 101;
